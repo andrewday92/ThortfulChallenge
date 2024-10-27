@@ -1,0 +1,35 @@
+.image-container{
+  position: relative;
+  z-index: 9998;
+  .loading-state {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .loading {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 10px solid #ddd;
+      border-top-color: orange;
+      animation: loading 1s linear infinite;
+      transform-origin: center;
+      &__small{
+        width: 25px;
+        height: 25px;
+        border: 2px solid #ddd;
+        border-top-color: orange;
+      }
+    }
+  }
+
+  @keyframes loading {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}

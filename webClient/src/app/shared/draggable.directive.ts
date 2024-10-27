@@ -66,7 +66,7 @@ export class DraggableDirective {
       this._renderer.removeClass(this._el.nativeElement , 'smooth-transition');
       this._clientX = undefined;
       this._clientY = undefined;
-      this._scrollY = undefined
+      this._scrollY = undefined;
     });
   }
 }

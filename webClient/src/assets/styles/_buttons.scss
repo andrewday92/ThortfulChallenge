@@ -1,0 +1,101 @@
+button{
+  height: auto;
+  width: auto;
+  margin: 0.5em;
+  padding: 1em 3em;
+  border: 1px solid $btn-action;
+  border-radius: 3px;
+  background-color: transparent;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in;
+  &.btn-action{
+    border-color: $btn-action;
+    &__collapse{
+      font-size: 1.5em;
+      margin: 0em 0em 0.2em 0em;
+      padding: 0.3em;
+      background-color: whitesmoke;
+    }
+    &__clear{
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      font-size: 1.5em;
+      margin: 0em 0em 0.2em 0em;
+      padding: 0.3em;
+    }
+    &__card-transform{
+      @media screen and (max-width: 600px) {
+        width: calc(100% / 7);
+        margin: 0;
+        border-radius: 0;
+        border: unset;
+        border-width: 1px 0.5px 0px 0.5px;
+        border-style: solid;
+        border-color: $btn-action;
+        background-color: whitesmoke;
+        z-index: 9998;
+      }
+      font-size: 1.2em;
+      padding: 1em;
+      position: relative;
+      &:first-of-type{
+        @media screen and (max-width: 600px) {
+          &:hover, &:focus{
+            &::after{
+              left: 30%;
+            }
+          }
+        }
+      }
+      &:last-of-type{
+        @media screen and (max-width: 600px) {
+          &:hover, &:focus{
+            &::after{
+              left: -150%;
+            }
+          }
+        }
+      }
+
+      &:hover, &:focus{
+        z-index: 9999;
+        &::before{
+          content: '\A';
+          border-style: solid;
+          border-width: 10px 10px 0px 15px;
+          border-color: transparent #20242f transparent transparent;
+          transform-style: preserve-3d;
+          transform: rotate(45deg);
+          position: absolute;
+          bottom: calc(100% + 10px);
+          left: calc(50% - 15px);
+          z-index: 9998;
+        }
+        &::after{
+          @media screen and (max-width: 600px) {
+            font-size: 1em;
+            width: 30vw;
+            left: calc(-50% - 0.6em);
+          }
+          content: attr(title);
+          font-size: 0.8em;
+          z-index: 9998;
+          position: absolute;
+          width: auto;
+          height:auto;
+          bottom: calc(100% + 9px);
+          left: calc(-50% - 0.6em);
+          background-color: #20242f;
+          padding: 0.6em;
+        }
+      }
+    }
+    &:hover, &:focus{
+      background-color: $btn-action;
+      color: white;
+    }
+
+  }
+}
