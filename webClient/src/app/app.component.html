@@ -13,15 +13,15 @@
       </div>
       <div class="nice-form-group salutation-container">
         <label for="salutation">Write a salutation for your card here:</label>
-        <input type="text" [tabindex]="isSidebarCollapsed ? -1 : 0"  [maxlength]="20" formControlName="salutation" aria-label="Text input, limited to 20 characters to write the salutation inside of the card" (focus)="focus('inside')"/>
+        <input type="text" id="salutationField" [tabindex]="isSidebarCollapsed ? -1 : 0"  [maxlength]="20" formControlName="salutation" aria-label="Text input, limited to 20 characters to write the salutation inside of the card" (focus)="focus('inside')"/>
       </div>
       <div class="nice-form-group cardMessage-container">
         <label for="messageInput">Write a message for your card here:</label>
-        <textarea [tabindex]="isOpen ?  0 : -1"  formControlName="cardMessage" [maxlength]="50" aria-label="Text area limited to 50 characters to write the inside central message of the card" rows="3" (focus)="focus('inside')"></textarea>
+        <textarea id="cardMessageField" [tabindex]="isOpen ?  0 : -1"  formControlName="cardMessage" [maxlength]="50" aria-label="Text area limited to 50 characters to write the inside central message of the card" rows="3" (focus)="focus('inside')"></textarea>
       </div>
       <div class="nice-form-group signOff-container">
-        <label for="salutation">Write a sign off for your card here:</label>
-        <input type="text" [tabindex]="isSidebarCollapsed ? -1 : 0" [maxlength]="30" aria-label="Text input, limited to 30 characters to write the sign off inside of the card" formControlName="signOff" (focus)="focus('inside')"/>
+        <label for="signOff">Write a sign off for your card here:</label>
+        <input type="text" id="signOffField" [tabindex]="isSidebarCollapsed ? -1 : 0" [maxlength]="30" aria-label="Text input, limited to 30 characters to write the sign off inside of the card" formControlName="signOff" (focus)="focus('inside')"/>
       </div>
     </form>
     <form style="height: auto;" [formGroup]="searchForm">
@@ -67,9 +67,9 @@
       </div>
       <div class="card__face card__back"><div class="logo"></div></div>
       <div class="card__face card__center-right">
-        <p class="salutation" tabindex="0" (focus)="focus('inside')">{{salutation}}</p>
-        <p tabindex="0" (focus)="focus('inside')" >{{cardMessage}}</p>
-        <p class="sign-off" tabindex="0" (focus)="focus('inside')" >{{signOff}}</p>
+        <p class="salutation" tabindex="0" (focus)="focus('inside')" (dblclick)="editContent($event, 'salutation')" >{{salutation}}</p>
+        <p tabindex="0" (focus)="focus('inside')" (dblclick)="editContent($event, 'cardMessage')">{{cardMessage}}</p>
+        <p class="sign-off" tabindex="0" (focus)="focus('inside')" (dblclick)="editContent($event, 'signOff')" >{{signOff}}</p>
       </div>
 </div>
   </div>

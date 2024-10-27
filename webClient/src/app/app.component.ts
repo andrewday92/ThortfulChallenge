@@ -1,5 +1,5 @@
 import { occasions } from './shared/models/occasions.model';
-import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { CardTransformService } from './shared/card-transform.service';
 import { CardFaceService } from './shared/card-face.service';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
@@ -17,6 +17,9 @@ export type imageData = {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit , OnDestroy{
+  @ViewChild('salutationEl') salutationEl!: ElementRef;
+  @ViewChild('cardMessageEl') cardMessageEl!: ElementRef;
+  @ViewChild('signOffEl') signOffEl!: ElementRef;
   protected _cardFaceHistory: Array<{src: string, alt: string}> = [];
   protected counter: number = 50;
   private _destroy$: Subject<void> = new Subject();
@@ -131,6 +134,11 @@ export class AppComponent implements OnInit , OnDestroy{
         z: this.wholeCardZ
       }
     });
+  }
+
+  public editContent(event: Event, type: 'salutation' | 'cardMessage' | 'signOff'){
+    event.preventDefault();
+    this._renderer.selectRootElement(`#${type}Field`).focus();
   }
 
   public transformCard(dimension: 'x' | 'y' | 'z', unit: number = 30): void{

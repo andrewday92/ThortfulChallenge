@@ -304,7 +304,7 @@ main{
             text-align: center;
             margin:auto;
             font-family: Georgia, 'Times New Roman', Times, serif;
-
+            cursor: pointer;
             &.salutation{
               width: calc(100% - 2em);
               margin: 0em 1em;
