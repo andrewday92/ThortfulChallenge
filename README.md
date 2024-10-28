@@ -1,4 +1,5 @@
 # ThortfulChallenge
+Navigate to webClient folder, run `npm i` and then follow instructions below
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.8.
 
