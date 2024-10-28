@@ -1,6 +1,6 @@
 name: Build and Deploy Script
 concurrency:
-  group: production
+  group: github-pages
   cancel-in-progress: true
 on:
   push:
