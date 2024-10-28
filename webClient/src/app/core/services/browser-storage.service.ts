@@ -6,7 +6,7 @@ export class StorageType {
   data: any;
   type: StorageTypes;
   expiresAt?: number = new Date().getTime();
-  constructor(_data: string, _type: StorageTypes, _expiresAt?: number){
+  constructor(_data: any, _type: StorageTypes, _expiresAt?: number){
     this.data = _data;
     this.type = _type;
     this.expiresAt = _expiresAt;
@@ -80,7 +80,7 @@ export class BrowserStorageService {
     return crypto.AES.encrypt(JSON.stringify(value), environment.encryptionKey).toString();
   }
 
-  private decryptData(value: string): any {
+  public decryptData(value: string): any {
     return crypto.AES.decrypt(value, environment.encryptionKey).toString(crypto.enc.Utf8);
   }
 }

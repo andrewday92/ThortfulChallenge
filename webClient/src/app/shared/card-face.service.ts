@@ -1,4 +1,4 @@
-import { BrowserStorageService, StorageType, StorageTypes } from './../core/services/local-storage.service';
+import { BrowserStorageService, StorageType, StorageTypes } from '../core/services/browser-storage.service';
 import { Injectable } from '@angular/core';
 import { ApiHttpService } from '../core/services/api-http.service';
 import { map, Observable, tap } from 'rxjs';

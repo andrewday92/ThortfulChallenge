@@ -2,7 +2,7 @@ export const occasions = {
   newJob: {
     title: "New Job",
     salutation: ["Dear Andrew", "To Andrew", "Howdy Andrew"],
-    cardMessage: "Congratulations on the new job with us!!!",
+    cardMessage: "Congratulations on the new job with us!",
     signOff: "Yours Sincerely, Thortful"
   },
   wedding: {

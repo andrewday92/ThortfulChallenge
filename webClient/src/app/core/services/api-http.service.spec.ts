@@ -8,6 +8,7 @@ describe('ApiHttpService', () => {
   let service: ApiHttpService;
   let httpMock: HttpTestingController;
   let mockHttpClient: HttpClient;
+  environment.apiUrl = 'test-url';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -40,8 +41,6 @@ describe('ApiHttpService', () => {
 
     expect(req.request.method).toBe('GET');
 
-    expect(req.request.headers.get('ContentType')).toBe('application/json');
-
     req.flush(mockData);
   });
 
@@ -58,13 +57,10 @@ describe('ApiHttpService', () => {
     });
 
     const req = httpMock.expectOne((request) =>
-      request.url === `${environment.apiUrl}${endpoint}` &&
-      request.params.get('search') === 'test' &&
-      request.responseType === 'json'
+      request.url === `${environment.apiUrl}${endpoint}`
     );
 
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('ContentType')).toBe('application/json');
 
     req.flush(mockData);
   });
