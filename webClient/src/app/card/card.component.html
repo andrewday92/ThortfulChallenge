@@ -1,0 +1,19 @@
+<div class="card-wrapper" appDraggable [reducedMotion]="!reducedMotion" [draggable]="!reducedMotion" [ngClass]="{'open': isOpen}">
+<div class="card" [style.transform]="'translateZ(' + (wholeCardZ ? wholeCardZ : 0 )+'em) rotateX(' + (wholeCardX ? wholeCardX : 0) + 'deg) rotateY(' + (wholeCardY ? wholeCardY : 0) + 'deg)'">
+  <div class="card__face card__center-left"></div>
+  <div class="card__face card__front" tabindex="0" (focus)="focus('face')">
+    <div class="image-container" id="imageContainer">
+      <div *ngIf="loading" class="loading-state">
+        <div class="loading"></div>
+      </div>
+      <img ngSrc="../assets/images/new-job.webp" [alt]="'champagne glass'" fill id="dynamicImage">
+    </div>
+  </div>
+  <div class="card__face card__back"><div class="logo"></div></div>
+  <div class="card__face card__center-right">
+      <p class="salutation" tabindex="0" (focus)="focus('inside')" (click)="editContent($event, 'salutation')" >{{salutation}}</p>
+      <p (focus)="focus('inside')" tabindex="0"  (click)="editContent($event, 'cardMessage')">{{cardMessage}}</p>
+      <p class="sign-off" tabindex="0" (focus)="focus('inside')" (click)="editContent($event, 'signOff')" >{{signOff}}</p>
+  </div>
+</div>
+</div>

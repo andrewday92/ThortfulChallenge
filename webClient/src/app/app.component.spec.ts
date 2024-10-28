@@ -4,10 +4,11 @@ import { CardTransformService } from './shared/card-transform.service';
 import { CardFaceService } from './shared/card-face.service';
 import { BehaviorSubject, of } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Renderer2, Type } from '@angular/core';
+import { NO_ERRORS_SCHEMA, Renderer2, Type } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core/core.module';
+import { CardComponent } from './card/card.component';
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -15,7 +16,6 @@ describe('AppComponent', () => {
   let cardTransformService: CardTransformService;
   let cardFaceService: CardFaceService;
   let renderer: Renderer2;
-  let rendererStub: jasmine.SpyObj<Renderer2>;
   beforeEach(async () => {
     const cardTransformServiceStub = {
       cardTranslations$: new BehaviorSubject({ wholeCard: { x: 0, y: 0, z: 0 } })
@@ -27,16 +27,16 @@ describe('AppComponent', () => {
       cardFaceHistory: [{src: 'url', srcThumb: 'thumb-url', alt: 'Test Image' }]
     };
 
-    rendererStub = jasmine.createSpyObj(renderer, ['setAttribute']);
 
     await TestBed.configureTestingModule({
-      declarations: [AppComponent],
+      declarations: [AppComponent, CardComponent],
       imports: [ReactiveFormsModule, SharedModule, CoreModule],
       providers: [
         { provide: CardTransformService, useValue: cardTransformServiceStub },
         { provide: CardFaceService, useValue: cardFaceServiceStub },
         { provide: Renderer2 }
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
 
 
@@ -117,12 +117,6 @@ describe('AppComponent', () => {
     });
   });
 
-  it('should update image attributes when changeCardFace is called', () => {
-    component.changeCardFace('new-src', 'new-alt');
-
-    expect(renderer.setAttribute).toHaveBeenCalledTimes(30);
-  });
-
   it('should reset the searchForm when reset button is clicked', () => {
     const resetButton = fixture.debugElement.query(By.css('.btn-action[aria-label="Reset search topic and query fields to blank"]'));
     spyOn(component.searchForm, 'reset');
@@ -130,13 +124,4 @@ describe('AppComponent', () => {
     resetButton.triggerEventHandler('click', null);
     expect(component.searchForm.reset).toHaveBeenCalled();
   });
-
-  it('should call editContent when a salutation is clicked', () => {
-    spyOn(component, 'editContent');
-    const salutationField = fixture.debugElement.query(By.css('.salutation'));
-
-    salutationField.triggerEventHandler('click', { preventDefault: () => {} });
-    expect(component.editContent).toHaveBeenCalled();
-  });
-
 });

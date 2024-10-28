@@ -8,10 +8,12 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CoreModule } from './core/core.module';
 import { HeadersInterceptor } from './core/services/headers.interceptor';
+import { CardComponent } from './card/card.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    CardComponent
   ],
   imports: [
     BrowserModule,

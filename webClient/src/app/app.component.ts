@@ -22,8 +22,6 @@ export class AppComponent implements OnInit , OnDestroy{
   title = 'client';
   protected image = new Image();
   loading = false;
-  protected reducedMotionMediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-  protected reducedMotion: boolean = this.reducedMotionMediaQuery.matches;
   public searchForm: FormGroup = new FormGroup({
     topics: new FormControl('people'),
     query: new FormControl('New Job')
@@ -42,13 +40,6 @@ export class AppComponent implements OnInit , OnDestroy{
     private _renderer: Renderer2) {}
 
   ngOnInit(): void {
-    this._cardTransformService.cardTranslations$
-    .pipe(takeUntil(this._destroy$))
-    .subscribe((translationData: cardTranslations) => {
-      this.wholeCardX = translationData.wholeCard.x;
-      this.wholeCardY = translationData.wholeCard.y;
-      this.wholeCardZ = translationData.wholeCard.z;
-    });
     this.topics = this._cardFaceService.getTopics() as BehaviorSubject<[{title: string, slug: string}] | undefined>;
     this.cardActionsForm
       .valueChanges.pipe(takeUntil(this._destroy$))
@@ -58,9 +49,7 @@ export class AppComponent implements OnInit , OnDestroy{
         this.signOff = message.signOff;
       });
     this.counter -= this._cardFaceHistory.length;
-    this._renderer.listen(this.reducedMotionMediaQuery, 'change', () => {
-      this.reducedMotion = this.reducedMotionMediaQuery.matches;
-    })
+
   }
   ngOnDestroy(): void {
       this._destroy$.next();
@@ -107,12 +96,6 @@ export class AppComponent implements OnInit , OnDestroy{
         z: this.wholeCardZ
       }
     });
-  }
-
-  public editContent(event: MouseEvent, type: 'salutation' | 'cardMessage' | 'signOff'){
-    event.preventDefault();
-    this.isSidebarCollapsed = false;
-    this._renderer.selectRootElement(`#${type}Field`).focus();
   }
 
   public transformCard(dimension: 'x' | 'y' | 'z', unit: number = 30): void{
