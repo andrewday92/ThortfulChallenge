@@ -1,4 +1,7 @@
 name: Build and Deploy Script
+concurrency:
+  group: production
+  cancel-in-progress: true
 on:
   push:
     branches:
@@ -6,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: production
     steps:
     
     - name: Checkout Repository
@@ -16,6 +20,9 @@ jobs:
       with:
           node-version: 18
           
+    - name: Change Directory to Angular Project
+      run: cd webClient
+    
     - name: Install Dependencies
       run: npm install
 
