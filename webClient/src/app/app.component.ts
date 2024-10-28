@@ -3,7 +3,7 @@ import { CardTransformService } from './shared/card-transform.service';
 import { CardFaceService } from './shared/card-face.service';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { occasions, cardTranslations, CardFace } from '@models';
+import { occasions, CardFace, cardTranslations } from '@models';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -19,7 +19,6 @@ export class AppComponent implements OnInit , OnDestroy{
   public isOpen: boolean = false;
   public topics: BehaviorSubject<[{title: string, slug: string}] | undefined> = new BehaviorSubject<[{title: string, slug: string}] | undefined>(undefined);
   public occasions: BehaviorSubject<object | undefined> = new BehaviorSubject<object | undefined>(occasions);
-  title = 'client';
   protected image = new Image();
   loading = false;
   public searchForm: FormGroup = new FormGroup({
@@ -32,7 +31,7 @@ export class AppComponent implements OnInit , OnDestroy{
     cardMessage: new FormControl(occasions.newJob.cardMessage, [Validators.maxLength(50)]),
     signOff: new FormControl(occasions.newJob.signOff, [Validators.maxLength(30)])
   })
-  protected isSidebarCollapsed = (window.innerWidth < 600);
+  protected isSidebarCollapsed: boolean = (window.innerWidth < 600);
   protected salutation: string = this.cardActionsForm.controls['salutation'].value;
   protected cardMessage: string = this.cardActionsForm.controls['cardMessage'].value;
   protected signOff: string = this.cardActionsForm.controls['signOff'].value;
@@ -40,13 +39,25 @@ export class AppComponent implements OnInit , OnDestroy{
     private _renderer: Renderer2) {}
 
   ngOnInit(): void {
+    this._cardTransformService.cardTranslations$
+    .pipe(takeUntil(this._destroy$))
+    .subscribe((translationData: cardTranslations) => {
+      this.wholeCardX = translationData.wholeCard.x;
+      this.wholeCardY = translationData.wholeCard.y;
+      this.wholeCardZ = translationData.wholeCard.z;
+    });
     this.topics = this._cardFaceService.getTopics() as BehaviorSubject<[{title: string, slug: string}] | undefined>;
     this.cardActionsForm
       .valueChanges.pipe(takeUntil(this._destroy$))
-      .subscribe((message)=> {
-        this.cardMessage = message.cardMessage;
-        this.salutation = message.salutation;
-        this.signOff = message.signOff;
+      .subscribe({
+        next: (message)=> {
+          this.cardMessage = message.cardMessage;
+          this.salutation = message.salutation;
+          this.signOff = message.signOff;
+        },
+        error: (err) => {
+          console.error(err)
+        }
       });
     this.counter -= this._cardFaceHistory.length;
 
@@ -66,9 +77,14 @@ export class AppComponent implements OnInit , OnDestroy{
     let searchValue = this.searchForm.value;
     this._cardFaceService.getCardImage(searchValue)
       .pipe(takeUntil(this._destroy$))
-      .subscribe((images)=> {
-        this.changeCardFace(images.urls.full, images.alt_description);
-        this._cardFaceHistory = this._cardFaceService.cardFaceHistory;
+      .subscribe({
+        next: (images)=> {
+          this.changeCardFace(images.urls.full, images.alt_description);
+          this._cardFaceHistory = this._cardFaceService.cardFaceHistory;
+        },
+        error:  (err) => {
+          console.error(err)
+        }
       });
   }
 
