@@ -19,9 +19,6 @@ jobs:
       uses: actions/setup-node@v2
       with:
           node-version: 18
-          
-    - name: Change Directory to Angular Project
-      run: cd webClient
     
     - name: Install Dependencies
       run: npm install
