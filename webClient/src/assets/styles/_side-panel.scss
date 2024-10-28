@@ -2,6 +2,7 @@
   transition: ease-out left 0.3s;
   @media screen and (min-width: 700px) {
     width: 50vw;
+    transition: unset;
   }
   @media screen and (min-width: 900px) {
     width: 40vw;

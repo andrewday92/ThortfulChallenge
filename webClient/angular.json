@@ -15,7 +15,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-builders/custom-webpack:browser",
           "options": {
             "outputPath": "dist/client",
             "index": "src/index.html",
@@ -33,7 +33,11 @@
             "scripts": [],
             "allowedCommonJsDependencies": [
               "crypto-js"
-            ]
+            ],
+            "customWebpackConfig": {
+              "path": "src/custom-webpack.config.js",
+              "replaceDuplicatePlugins": true
+          }
           },
           "configurations": {
             "production": {
@@ -55,8 +59,17 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "aot": true,
               "outputHashing": "all"
             },
+            "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "fonts": true
+              },
             "development": {
               "buildOptimizer": false,
               "optimization": false,

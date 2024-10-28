@@ -1,13 +1,14 @@
 import { BrowserStorageService, StorageType, StorageTypes } from './../core/services/local-storage.service';
 import { Injectable } from '@angular/core';
 import { ApiHttpService } from '../core/services/api-http.service';
-import { map, Observable, of, tap } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
+import { CardFace } from '@models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CardFaceService {
-  public cardFaceHistory: Array<{src: string, alt: string}> = JSON.parse(localStorage.getItem('cardFaceHistory') ?? '[]');
+  public cardFaceHistory: Array<CardFace> = JSON.parse(localStorage.getItem('cardFaceHistory') ?? '[]');
   constructor(private _api: ApiHttpService, private _browserStorageService: BrowserStorageService) {}
 
   getTopics(): Observable<any> {
@@ -29,7 +30,10 @@ export class CardFaceService {
       tap((image: any) => {
         this.cardFaceHistory.push({
           src: image.urls.full,
-          alt: image.alt_description
+          srcThumb: image.urls.thumb,
+          alt: image.alt_description,
+          width: image.width,
+          height: image.height
         })
         this._browserStorageService.setItem<StorageType>("cardFaceHistory", {data: this.cardFaceHistory.reverse(), type: StorageTypes.Local});
       })

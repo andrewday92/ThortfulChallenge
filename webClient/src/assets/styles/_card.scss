@@ -35,7 +35,7 @@
 
       &.card__center-left{
         background-color: rgb(249, 249, 249);
-        transform: rotateY(-10deg) rotateX(180deg);
+        transform: rotateY(-30deg) rotateX(180deg);
         box-shadow: 4px 0px 4px 0px #888888;
         border-left: 0.5px dashed #464646;
         p{
@@ -46,18 +46,18 @@
         }
       }
       &.card__front{
-        background-image: url('../images/shutterstock_2152511439.jpg');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         background-color: whitesmoke;
-        transform: rotateY(-10deg);
+        transform: rotateY(-30deg);
         box-shadow: 4px 0px 4px 0px #888888;
       }
 
       &.card__center-right{
         background-color: rgb(249, 249, 249);
-        transform: rotateY(20deg);
+        transform-style: preserve-3d;
+        transform: rotateY(0deg);
         box-shadow: 4px 0px 4px 0px #888888;
         border-left: 0.5px dashed #464646;
         p {
@@ -66,18 +66,28 @@
           justify-content: center;
           text-wrap: wrap;
           flex-direction: column;
-          width: 65%;
+          background-color: rgb(249, 249, 249);
+          width: calc(100% - 2em);
+          margin: 0em 1em;
           height: 33%;
           text-align: center;
           margin:auto;
-          font-family: Georgia, 'Times New Roman', Times, serif;
-          cursor: pointer;
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 0.8em;
+          position: relative;
+          z-index: 100;
+          cursor: text;
+          border: 1px dashed transparent;
+          &:hover{
+            border: 1px dashed lightgrey;
+          }
           &.salutation{
-            width: calc(100% - 2em);
-            margin: 0em 1em;
             align-items: flex-start;
             justify-content: flex-start;
             font-family: "Ephesis", cursive;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
             font-weight: 400;
             font-style: normal;
             font-size: 1.2em;
@@ -86,13 +96,16 @@
           &.sign-off{
             font-size: 1.2em;
             font-family: "Ephesis", cursive;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
             font-weight: 400;
             font-style: normal;
           }
         }
       }
       &.card__back{
-        transform: rotateY(20deg) rotateX(180deg);
+        transform: rotateY(0deg) rotateX(180deg);
         box-shadow: 4px 0px 4px 0px #888888;
         background-color: whitesmoke;
         border-left: 1px solid #464646;
@@ -101,7 +114,7 @@
           width: 50%;
           height: 2em;
           transform-origin: center;
-          background-image: url('../images/shutterstock_2152511439.jpg');
+          background-image: url('../images/thortful-logo.webp');
           background-position: bottom;
           background-repeat: no-repeat;
           background-size: 80%;
@@ -131,10 +144,10 @@
           transform: translateX(50%) rotateY(-119.9deg);
         }
         &.card__center-right{
-          transform: translateX(50%) rotateY(20deg);
+          transform: translateX(50%) rotateY(0deg);
         }
         &.card__back{
-          transform: translateX(50%) rotateY(20.1deg) rotateX(180deg);
+          transform: translateX(50%) rotateY(0.1deg) rotateX(180deg);
         }
       }
     }

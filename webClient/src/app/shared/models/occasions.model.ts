@@ -8,7 +8,7 @@ export const occasions = {
   wedding: {
     title: "Wedding",
     salutation: ["Dear Mr and Mrs", "Dear Mr and Mr", "Dear Mrs and Mrs"],
-    cardMessage: "May the your year together be filled with happiness and joy",
+    cardMessage: "May the your years together be filled with happiness and joy",
     signOff: "Love, Your Cousin Twice Removed"
   },
   funeral: {

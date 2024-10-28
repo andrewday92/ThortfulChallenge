@@ -1,26 +1,16 @@
-import { occasions } from './shared/models/occasions.model';
-import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { CardTransformService } from './shared/card-transform.service';
 import { CardFaceService } from './shared/card-face.service';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { cardTranslations } from '@models';
-import { BrowserStorageService } from './core/services/local-storage.service';
-
-export type imageData = {
-  url: string,
-  alt: string
-}
+import { occasions, cardTranslations, CardFace } from '@models';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit , OnDestroy{
-  @ViewChild('salutationEl') salutationEl!: ElementRef;
-  @ViewChild('cardMessageEl') cardMessageEl!: ElementRef;
-  @ViewChild('signOffEl') signOffEl!: ElementRef;
-  protected _cardFaceHistory: Array<{src: string, alt: string}> = [];
+  protected _cardFaceHistory: Array<CardFace> = JSON.parse(localStorage.getItem('cardFaceHistory') ?? '[]');
   protected counter: number = 50;
   private _destroy$: Subject<void> = new Subject();
   public wholeCardX: number = 0;
@@ -32,21 +22,24 @@ export class AppComponent implements OnInit , OnDestroy{
   title = 'client';
   protected image = new Image();
   loading = false;
+  protected reducedMotionMediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  protected reducedMotion: boolean = this.reducedMotionMediaQuery.matches;
   public searchForm: FormGroup = new FormGroup({
-    topics: new FormControl(''),
-    query: new FormControl('')
+    topics: new FormControl('people'),
+    query: new FormControl('New Job')
   });
   public cardActionsForm: FormGroup = new FormGroup({
     occasions: new FormControl(Object.keys(occasions)[0]),
     salutation: new FormControl(occasions.newJob.salutation[0], [Validators.maxLength(20)]),
-    cardMessage: new FormControl(occasions.newJob.cardMessage),
-    signOff: new FormControl(occasions.newJob.signOff)
+    cardMessage: new FormControl(occasions.newJob.cardMessage, [Validators.maxLength(50)]),
+    signOff: new FormControl(occasions.newJob.signOff, [Validators.maxLength(30)])
   })
   protected isSidebarCollapsed = (window.innerWidth < 600);
   protected salutation: string = this.cardActionsForm.controls['salutation'].value;
   protected cardMessage: string = this.cardActionsForm.controls['cardMessage'].value;
-  protected signOff: string= this.cardActionsForm.controls['signOff'].value;
-  constructor(private _cardTransformService: CardTransformService, private _cardFaceService: CardFaceService, private _renderer: Renderer2, private _localStorageService: BrowserStorageService) {}
+  protected signOff: string = this.cardActionsForm.controls['signOff'].value;
+  constructor(private _cardTransformService: CardTransformService, private _cardFaceService: CardFaceService,
+    private _renderer: Renderer2) {}
 
   ngOnInit(): void {
     this._cardTransformService.cardTranslations$
@@ -64,8 +57,10 @@ export class AppComponent implements OnInit , OnDestroy{
         this.salutation = message.salutation;
         this.signOff = message.signOff;
       });
-    this._cardFaceHistory = JSON.parse(localStorage.getItem('cardFaceHistory') ?? '[]');
-    this.counter -= this._cardFaceHistory.length
+    this.counter -= this._cardFaceHistory.length;
+    this._renderer.listen(this.reducedMotionMediaQuery, 'change', () => {
+      this.reducedMotion = this.reducedMotionMediaQuery.matches;
+    })
   }
   ngOnDestroy(): void {
       this._destroy$.next();
@@ -83,46 +78,24 @@ export class AppComponent implements OnInit , OnDestroy{
     this._cardFaceService.getCardImage(searchValue)
       .pipe(takeUntil(this._destroy$))
       .subscribe((images)=> {
-        this.loading = true;
-        this.image.src = images.urls.full;
-        this.image.alt = images.alt_description;
-        this.image.id = 'dynamicImage';
-        this.image.onload = () => {
-          --this.counter;
-          let dynamicImageNode = document.getElementById('dynamicImage');
-          if (!dynamicImageNode) {
-            document.getElementById('imageContainer')?.append(this.image);
-          } else {
-            dynamicImageNode?.replaceWith(this.image);
-          }
-          this._cardFaceHistory = this._cardFaceService.cardFaceHistory;
-          this.loading = false;
-        }
+        this.changeCardFace(images.urls.full, images.alt_description);
+        this._cardFaceHistory = this._cardFaceService.cardFaceHistory;
       });
   }
 
-  public changeCardFace(face: any): void {
+  public changeCardFace(src: any, alt: any): void {
     this.loading = true;
     this.focus('face');
-    this.image.src = face.src;
-    this.image.alt = face.alt;
-    this.image.id = 'dynamicImage';
-    this.image.onload = () => {
-      let dynamicImageNode = document.getElementById('dynamicImage');
-      if (!dynamicImageNode) {
-        document.getElementById('imageContainer')?.append(this.image);
-      } else {
-        dynamicImageNode?.replaceWith(this.image);
-      }
-      if(window.innerWidth < 600){
-        this.isSidebarCollapsed = !this.isSidebarCollapsed;
+    const dynamicImageNode = this._renderer.selectRootElement('#dynamicImage', false);
+    --this.counter;
+    this._renderer.setAttribute(dynamicImageNode, 'src', src);
+    this.isSidebarCollapsed = window.innerWidth < 600;
 
-      }
-      this.isOpen = false;
-      this._cardFaceHistory = this._cardFaceService.cardFaceHistory;
-
+    this._renderer.listen(dynamicImageNode, 'load', ()=> {
+      this._renderer.setAttribute(dynamicImageNode, 'ngSrc', src);
+      this._renderer.setAttribute(dynamicImageNode, 'alt', alt);
       this.loading = false;
-    }
+    })
   }
 
   public focus(type: 'face' | 'inside'){
@@ -130,14 +103,15 @@ export class AppComponent implements OnInit , OnDestroy{
     this._cardTransformService.cardTranslations$.next({
       wholeCard: {
         x: 0,
-        y: -20,
+        y: 0,
         z: this.wholeCardZ
       }
     });
   }
 
-  public editContent(event: Event, type: 'salutation' | 'cardMessage' | 'signOff'){
+  public editContent(event: MouseEvent, type: 'salutation' | 'cardMessage' | 'signOff'){
     event.preventDefault();
+    this.isSidebarCollapsed = false;
     this._renderer.selectRootElement(`#${type}Field`).focus();
   }
 
@@ -162,5 +136,6 @@ export class AppComponent implements OnInit , OnDestroy{
     this.cardActionsForm.controls['salutation'].setValue(occasionData.salutation[Math.floor(Math.random() * occasionData.salutation.length)]);
     this.cardActionsForm.controls['cardMessage'].setValue(occasionData.cardMessage);
     this.cardActionsForm.controls['signOff'].setValue(occasionData.signOff);
+    this.searchForm.controls['query'].setValue(occasionData.title);
   }
 }

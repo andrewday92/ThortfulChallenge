@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 
 @NgModule({
   declarations: [],
-  imports: [CommonModule],
-  exports: [],
+  imports: [CommonModule, NgOptimizedImage],
+  exports: [NgOptimizedImage],
 })
 export class CoreModule {}
