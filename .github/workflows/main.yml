@@ -28,7 +28,7 @@ jobs:
         npm run build-and-deploy-gh-pages
       env:
         CI: true
-        GH_TOKEN: ${{ secrets.GH_Token }}
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
     
     
