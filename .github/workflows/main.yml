@@ -19,17 +19,17 @@ jobs:
       uses: actions/setup-node@v2
       with:
           node-version: 18
-          
-    - name: Change Directory to Angular Project
-      run: cd webClient
     
     - name: Install Dependencies
+      working-directory: ./webClient
       run: npm install
 
     - name: Build Angular App
+      working-directory: ./webClient
       run: npm run build
 
     - name: Deploy to gh pages
+      working-directory: ./webClient
       run: |
         npx angular-cli-ghpages --dir=dist/client
       env:
