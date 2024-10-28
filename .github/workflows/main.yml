@@ -5,7 +5,7 @@ concurrency:
 on:
   push:
     branches:
-      - deploy
+      - gh-pages
 jobs:
   build:
     runs-on: ubuntu-latest
