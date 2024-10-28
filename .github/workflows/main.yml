@@ -23,12 +23,9 @@ jobs:
     - name: Install Dependencies
       run: npm install
 
-    - name: Build Angular App
-      run: npm run build
-
     - name: Deploy to gh pages
       run: |
-        npx angular-cli-ghpages --dir=dist/client
+        npm run build-and-deploy-gh-pages
       env:
         CI: true
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
