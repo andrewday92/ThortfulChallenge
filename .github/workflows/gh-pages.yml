@@ -2,7 +2,7 @@ name: Build and Deploy Script
 on:
   push:
     branches:
-      - gh-pages
+      - main
 jobs:
   deploy:
     runs-on: ubuntu-latest
