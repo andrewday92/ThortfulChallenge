@@ -1,8 +1,8 @@
 .side-panel{
   transition: ease-out left 0.3s;
+  height: 100dvh;
   @media screen and (min-width: 700px) {
     width: 50vw;
-    height: 100dvh;
     transition: unset;
   }
   @media screen and (min-width: 900px) {
@@ -15,7 +15,7 @@
     width: 20vw;
   }
   position: absolute;
-  z-index: 999;
+  z-index: 9985;
   top: 0px;
   left: 0px;
   &.collapse{
