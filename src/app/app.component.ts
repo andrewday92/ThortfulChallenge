@@ -42,8 +42,8 @@ export class AppComponent implements OnInit , OnDestroy{
     this._cardTransformService.cardTranslations$
     .pipe(takeUntil(this._destroy$))
     .subscribe((translationData: cardTranslations) => {
-      this.wholeCardX = translationData.wholeCard.x;
-      this.wholeCardY = translationData.wholeCard.y;
+      this.wholeCardX = Math.ceil(translationData.wholeCard.x);
+      this.wholeCardY = Math.ceil(translationData.wholeCard.y);
       this.wholeCardZ = translationData.wholeCard.z;
     });
     this.topics = this._cardFaceService.getTopics() as BehaviorSubject<[{title: string, slug: string}] | undefined>;
