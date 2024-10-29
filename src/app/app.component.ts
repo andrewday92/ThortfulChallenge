@@ -114,10 +114,10 @@ export class AppComponent implements OnInit , OnDestroy{
     });
   }
 
-  public transformCard(dimension: 'x' | 'y' | 'z', unit: number = 30): void{
+  public transformCard(dimension: 'x' | 'y' | 'z', unit: number = 31): void{
     let boundedZoom: number = this.wholeCardZ - unit;
     if(dimension === 'z'){
-      boundedZoom = boundedZoom > 30 ? 30 : boundedZoom < -50 ? -50 : boundedZoom;
+      boundedZoom = boundedZoom > 31 ? 31 : boundedZoom < -51 ? -51 : boundedZoom;
     }
     this._cardTransformService.cardTranslations$.next({
       wholeCard: {
