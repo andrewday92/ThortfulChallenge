@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "client": {
+    "ThortfulChallenge": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
-            "outputPath": "dist/client",
+            "outputPath": "dist/ThortfulChallenge",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -59,7 +59,6 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "aot": true,
               "outputHashing": "all"
             },
             "optimization": {
@@ -85,10 +84,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "client:build:production"
+              "browserTarget": "ThortfulChallenge:build:production"
             },
             "development": {
-              "browserTarget": "client:build:development"
+              "browserTarget": "ThortfulChallenge:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -96,7 +95,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "client:build"
+            "browserTarget": "ThortfulChallenge:build"
           }
         },
         "test": {
