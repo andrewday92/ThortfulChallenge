@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "build-and-deploy-gh-pages": "ng build --configuration=production --base-href https://andrewday92.github.io/ThortfulChallenge/ && npx ngh --dir dist/ThortfulChallenge"
+    "build-and-deploy-gh-pages": "ng build --configuration=production --base-href https://andrewday92.github.io/ThortfulChallenge/ && npx ngh --dir=dist/ThortfulChallenge"
   },
   "private": true,
   "dependencies": {
