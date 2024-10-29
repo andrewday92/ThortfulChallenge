@@ -46,7 +46,7 @@ export class DraggableDirective {
 
       });
 
-      const moveCard = this._renderer.listen('document', 'touchmove', (moveEvent MouseEvent) => {
+      const moveCard = this._renderer.listen('document', 'mousemove', (moveEvent MouseEvent) => {
         this._renderer.addClass(this._el.nativeElement, 'smooth-transition');
         this.cardTranslations = this._cardTransformService.cardTranslations$.getValue();
         if (!this._clientX) { this._clientX = moveEvent.clientX}
@@ -63,7 +63,7 @@ export class DraggableDirective {
           this._clientY = moveEvent.clientY;
         }
       });
-      this._renderer.listen('document', 'touchend', (mouseUpEvent: MouseEvent) => {
+      this._renderer.listen('document', 'mouseup', (mouseUpEvent: MouseEvent) => {
         scrollCard();
         moveCard();
         this._renderer.removeClass(this._el.nativeElement , 'smooth-transition');
