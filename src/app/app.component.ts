@@ -39,10 +39,6 @@ export class AppComponent implements OnInit , OnDestroy{
     private _renderer: Renderer2) {}
 
   ngOnInit(): void {
-    const encryptionKey = process?.env?.['ENCRYPTION_KEY'] ?? '';
-    const accessKey = process?.env?.['ACCESS_KEY'] ?? '';
-    console.log("Confirm");
-    console.log(accessKey, encryptionKey);
     this._cardTransformService.cardTranslations$
     .pipe(takeUntil(this._destroy$))
     .subscribe((translationData: cardTranslations) => {
