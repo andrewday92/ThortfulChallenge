@@ -1,6 +1,6 @@
 name: Build and Deploy Script
 concurrency:
-  group: github-pages
+  group: gh-pages
   cancel-in-progress: true
 on:
   push:
@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: github-pages
+    environment: gh-pages
     steps:
     
     - name: Checkout Repository
