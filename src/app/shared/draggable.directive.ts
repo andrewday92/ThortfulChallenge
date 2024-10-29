@@ -19,7 +19,7 @@ export class DraggableDirective {
     this._nativeHostElement = this._el.nativeElement;
   }
 
-  @HostListener('mousedown', ['$event'])
+  @HostListener('pointerdown', ['$event'])
   onDragStart(event: any): void {
 
     if(this.reducedMotion){
@@ -46,7 +46,7 @@ export class DraggableDirective {
 
       });
 
-      const moveCard = this._renderer.listen('document', 'mousemove', (moveEvent: MouseEvent) => {
+      const moveCard = this._renderer.listen('document', 'pointermove', (moveEvent: PointerEvent) => {
         this._renderer.addClass(this._el.nativeElement, 'smooth-transition');
         this.cardTranslations = this._cardTransformService.cardTranslations$.getValue();
         if (!this._clientX) { this._clientX = moveEvent.clientX}
@@ -63,7 +63,7 @@ export class DraggableDirective {
           this._clientY = moveEvent.clientY;
         }
       });
-      this._renderer.listen('document', 'mouseup', (mouseUpEvent: MouseEvent) => {
+      this._renderer.listen('document', 'pointerup', (mouseUpEvent: PointerEvent) => {
         scrollCard();
         moveCard();
         this._renderer.removeClass(this._el.nativeElement , 'smooth-transition');
