@@ -1,7 +1,6 @@
 {
   "name": "ThortfulChallenge",
   "version": "0.0.0",
-  "homepage": "https://andrewday92.github.io/ThortfulChallenge",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
