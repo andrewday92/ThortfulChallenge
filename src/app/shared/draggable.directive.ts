@@ -46,7 +46,7 @@ export class DraggableDirective {
 
       });
 
-      const moveCard = this._renderer.listen('document', 'mousemove', (moveEvent MouseEvent) => {
+      const moveCard = this._renderer.listen('document', 'mousemove', (moveEvent: MouseEvent) => {
         this._renderer.addClass(this._el.nativeElement, 'smooth-transition');
         this.cardTranslations = this._cardTransformService.cardTranslations$.getValue();
         if (!this._clientX) { this._clientX = moveEvent.clientX}
