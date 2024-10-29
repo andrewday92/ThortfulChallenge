@@ -26,7 +26,7 @@ button{
       padding: 0.3em;
     }
     &__card-transform{
-      @media screen and (max-width: 600px) {
+      @media screen and (max-width: 700px) {
         width: calc(100% / 7);
         margin: 0;
         border-radius: 0;
@@ -35,8 +35,9 @@ button{
         border-style: solid;
         border-color: $btn-action;
         background-color: whitesmoke;
-        z-index: 9998;
+        z-index: 9980;
       }
+      z-index: 9995;
       font-size: 1.2em;
       padding: 1em;
       position: relative;
