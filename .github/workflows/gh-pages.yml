@@ -19,12 +19,6 @@ jobs:
     - name: Install Dependencies
       run: npm install
 
-    - name: Set Environment Vars
-      run: |
-           cd src/app/
-           sed -i "s!\[\[ACCESS_KEY\]\]!${{ secrets.ANGULAR_APP_ACCESS_KEY }}!g" app.component.ts
-           cd ../..
-    
     - name: Build
       run: npm run build
            
