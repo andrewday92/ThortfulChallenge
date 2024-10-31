@@ -18,10 +18,12 @@ jobs:
     
     - name: Install Dependencies
       run: npm install
+
+    - name: Set Env Vars
+      run: echo "TestKey="${{ secrets.ANGULAR_APP_ACCESS_KEY }} >> "$GITHUB_ENV"
     
     - name: Build
-      run: echo "TestKey="${{ secrets.ANGULAR_APP_ACCESS_KEY }} >> "$GITHUB_ENV"
-           npm run build
+      run: npm run build
            
     - name: Deploy
       if: success()
