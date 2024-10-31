@@ -20,7 +20,7 @@ jobs:
       run: npm install
 
     - name: Set Env Vars
-      run: echo "TestKey="${{ secrets.ANGULAR_APP_ACCESS_KEY }} >> "$GITHUB_ENV"
+      run: echo `TestKey=${{ secrets.ANGULAR_APP_ACCESS_KEY }}` >> "$GITHUB_ENV"
     
     - name: Build
       run: npm run build
