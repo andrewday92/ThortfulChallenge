@@ -20,7 +20,7 @@ jobs:
       run: npm install
 
     - name: Set Environment Vars
-      run: sed -i "s!\[\[ACCESS_TOKEN\]\]!${ secrets.ANGULAR_APP_ACCESS_KEY }!g" *.ts
+      run: sed -i "s!\[\[ACCESS_TOKEN\]\]!${{ secrets.ANGULAR_APP_ACCESS_KEY }}!g" *.ts
     
     - name: Build
       run: npm run build
