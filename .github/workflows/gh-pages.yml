@@ -22,7 +22,7 @@ jobs:
     - name: Set Environment Vars
       run: |
            cd src/app/
-           sed -i "s!\[\[ACCESS_TOKEN\]\]!${{ secrets.ANGULAR_APP_ACCESS_KEY }}!g" app.component.ts
+           sed -i "s!\[\[ACCESS_KEY\]\]!${{ secrets.ANGULAR_APP_ACCESS_KEY }}!g" app.component.ts
            cd ../..
     
     - name: Build
