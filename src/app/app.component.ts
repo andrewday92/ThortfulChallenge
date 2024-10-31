@@ -10,7 +10,7 @@ import { occasions, CardFace, cardTranslations } from '@models';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit , OnDestroy{
-  public TestKey: any = process.env['TestKey'];
+  public TestKey: any = '[[ACCESS_KEY]]';
   protected _cardFaceHistory: Array<CardFace> = JSON.parse(localStorage.getItem('cardFaceHistory') ?? '[]');
   protected counter: number = 50;
   private _destroy$: Subject<void> = new Subject();
