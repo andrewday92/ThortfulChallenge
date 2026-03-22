@@ -1,10 +1,11 @@
-export type cardTranslations = {
-  wholeCard: thirdDimensionalMapping
+export type CardTranslations = {
+  wholeCard: ThirdDimensionalMapping;
 }
-export type thirdDimensionalMapping = {
-  x: number,
-  y: number,
-  z: number
+
+export type ThirdDimensionalMapping = {
+  x: number;
+  y: number;
+  z: number;
 }
 
 /** Shared zoom bounds for consistent Z-axis clamping across directive and component */

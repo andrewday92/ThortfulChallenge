@@ -30,7 +30,7 @@
       <div class="nice-form-group topics-container">
         <label for="topicDropdown">Search Topic</label>
         <select id="topicDropdown" [tabindex]="isSidebarCollapsed ? -1 : 0" aria-label="Dropdown to choose a topic to search under for the front face of the card" formControlName="topics" (focus)="focus('face')">
-          @for (topic of topics; track topic.slug) {
+          @for (topic of topics$ | async; track topic.slug) {
             <option [value]="topic.slug">{{topic.title}}</option>
           }
         </select>

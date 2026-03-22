@@ -5,9 +5,9 @@ export interface Occasion {
   signOff: string;
 }
 
-export type OccasionKey = keyof typeof occasions;
+export type OccasionKey = 'newJob' | 'wedding' | 'funeral' | 'birthday';
 
-export const occasions: Record<string, Occasion> = {
+export const occasions: Record<OccasionKey, Occasion> = {
   newJob: {
     title: "New Job",
     salutation: ["Dear Andrew", "To Andrew", "Howdy Andrew"],

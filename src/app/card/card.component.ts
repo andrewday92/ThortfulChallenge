@@ -27,7 +27,7 @@ export class CardComponent implements OnInit, OnDestroy {
   isOpen = input<boolean>(false);
   loading = input<boolean>(false);
 
-  /** Emits when the card should focus on a particular face */
+  /** Emits the card focus type so the parent can handle the transform service call */
   focusCard = output<'face' | 'inside'>();
 
   private _mediaQueryHandler = () => {

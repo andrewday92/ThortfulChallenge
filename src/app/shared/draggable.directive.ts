@@ -1,6 +1,5 @@
 import { Directive, ElementRef, HostListener, Input, OnDestroy, Renderer2 } from '@angular/core';
 import { CardTransformService } from './card-transform.service';
-import { ZOOM_BOUNDS } from '@models';
 
 
 @Directive({
@@ -19,26 +18,33 @@ export class DraggableDirective implements OnDestroy {
   private _activeMoveListener: (() => void) | null = null;
   private _activePointerUpListener: (() => void) | null = null;
 
-  constructor(private _renderer: Renderer2, private _el: ElementRef, private _cardTransformService: CardTransformService) {}
+  constructor(
+    private _renderer: Renderer2,
+    private _el: ElementRef,
+    private _cardTransformService: CardTransformService
+  ) {}
 
   ngOnDestroy(): void {
     this._cleanupListeners();
+    if (this._rafId) {
+      cancelAnimationFrame(this._rafId);
+    }
   }
 
   @HostListener('pointerdown', ['$event'])
   onDragStart(event: PointerEvent): void {
 
-    if(this.reducedMotion){
+    if (this.reducedMotion) {
       event.preventDefault();
 
       // Clean up any previously active listeners before registering new ones
       this._cleanupListeners();
 
       this._activeScrollListener = this._renderer.listen(this._el.nativeElement, 'wheel', (wheelEvent: WheelEvent) => {
-        if (!this._scrollY) { this._scrollY = wheelEvent.deltaY}
+        if (!this._scrollY) { this._scrollY = wheelEvent.deltaY; }
         const current = this._cardTransformService.getCurrentTranslations();
         const cardNewZ = current.wholeCard.z - this._scrollY;
-        const boundedZoom = Math.max(ZOOM_BOUNDS.min, Math.min(ZOOM_BOUNDS.max, cardNewZ));
+        const boundedZoom = this._cardTransformService.clampZoom(cardNewZ);
         this._cardTransformService.updateTranslations({
           wholeCard: {
             x: current.wholeCard.x,
@@ -56,9 +62,9 @@ export class DraggableDirective implements OnDestroy {
           this._rafId = null;
           this._renderer.addClass(this._el.nativeElement, 'smooth-transition');
           const current = this._cardTransformService.getCurrentTranslations();
-          if (!this._clientX) { this._clientX = moveEvent.clientX}
-          if (!this._clientY) { this._clientY = moveEvent.clientY}
-          if((this._clientX !== moveEvent.clientX) || (this._clientY !== moveEvent.clientY)){
+          if (!this._clientX) { this._clientX = moveEvent.clientX; }
+          if (!this._clientY) { this._clientY = moveEvent.clientY; }
+          if ((this._clientX !== moveEvent.clientX) || (this._clientY !== moveEvent.clientY)) {
             this._cardTransformService.updateTranslations({
               wholeCard: {
                 x: current.wholeCard.x - this._clientY + moveEvent.clientY,
@@ -74,7 +80,7 @@ export class DraggableDirective implements OnDestroy {
 
       this._activePointerUpListener = this._renderer.listen('document', 'pointerup', () => {
         this._cleanupListeners();
-        this._renderer.removeClass(this._el.nativeElement , 'smooth-transition');
+        this._renderer.removeClass(this._el.nativeElement, 'smooth-transition');
         this._clientX = undefined;
         this._clientY = undefined;
         this._scrollY = undefined;

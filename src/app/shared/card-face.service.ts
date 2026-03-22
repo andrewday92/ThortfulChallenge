@@ -26,13 +26,11 @@ export class CardFaceService {
   }
 
   getTopics(): Observable<Topic[]> {
-    const params = {
-      'per_page': 12
-    }
+    const params = { 'per_page': 12 };
 
     return this._api.get<Array<{ title: string; slug: string }>>('topics', params).pipe(
       map((data) =>
-        data.map((topic) => ({
+        data.map((topic): Topic => ({
           title: topic.title,
           slug: topic.slug
         }))
@@ -50,10 +48,10 @@ export class CardFaceService {
           width: image.width,
           height: image.height
         });
-        this._browserStorageService.setItem<StorageType>("cardFaceHistory", {
-          data: [...this.cardFaceHistory].reverse(),
-          type: StorageTypes.Local
-        });
+        this._browserStorageService.setItem<StorageType>(
+          "cardFaceHistory",
+          { data: [...this.cardFaceHistory].reverse(), type: StorageTypes.Local }
+        );
       })
     );
   }
