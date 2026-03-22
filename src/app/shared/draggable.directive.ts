@@ -1,6 +1,6 @@
 import { Directive, ElementRef, HostListener, Input, OnDestroy, Renderer2 } from '@angular/core';
 import { CardTransformService } from './card-transform.service';
-import { cardTranslations } from '@models';
+import { ZOOM_BOUNDS } from '@models';
 
 
 @Directive({
@@ -9,29 +9,24 @@ import { cardTranslations } from '@models';
 })
 export class DraggableDirective implements OnDestroy {
   @Input() reducedMotion = false;
-  public cardTranslations: cardTranslations = {wholeCard: {x: 0, y: -20, z: 0}};
-  private _offsetX = 0;
-  private _offsetY = 0;
   private _clientX: number | undefined;
   private _clientY: number | undefined;
   private _scrollY: number | undefined;
-  private _nativeHostElement!: any;
+  private _rafId: number | null = null;
 
   /** Track active listener teardown functions to prevent memory leaks */
   private _activeScrollListener: (() => void) | null = null;
   private _activeMoveListener: (() => void) | null = null;
   private _activePointerUpListener: (() => void) | null = null;
 
-  constructor(private _renderer: Renderer2, private _el: ElementRef, private _cardTransformService: CardTransformService) {
-    this._nativeHostElement = this._el.nativeElement;
-  }
+  constructor(private _renderer: Renderer2, private _el: ElementRef, private _cardTransformService: CardTransformService) {}
 
   ngOnDestroy(): void {
     this._cleanupListeners();
   }
 
   @HostListener('pointerdown', ['$event'])
-  onDragStart(event: any): void {
+  onDragStart(event: PointerEvent): void {
 
     if(this.reducedMotion){
       event.preventDefault();
@@ -39,43 +34,42 @@ export class DraggableDirective implements OnDestroy {
       // Clean up any previously active listeners before registering new ones
       this._cleanupListeners();
 
-      const rect = this._nativeHostElement.getBoundingClientRect();
-      this._offsetX = event.clientX - rect.left;
-      this._offsetY = event.clientY - rect.top;
-
       this._activeScrollListener = this._renderer.listen(this._el.nativeElement, 'wheel', (wheelEvent: WheelEvent) => {
         if (!this._scrollY) { this._scrollY = wheelEvent.deltaY}
-        const cardNewZ = this.cardTranslations.wholeCard.z - this._scrollY;
-        const boundedZoom: number = cardNewZ > 30  ? 30 : cardNewZ < -50 ? -50 : cardNewZ;
-        if(boundedZoom < 30 && boundedZoom > -50){
-          this._cardTransformService.cardTranslations$.next({
-            wholeCard: {
-              x: this.cardTranslations.wholeCard.x,
-              y: this.cardTranslations.wholeCard.y,
-              z: boundedZoom
-            }
-          });
-        }
+        const current = this._cardTransformService.getCurrentTranslations();
+        const cardNewZ = current.wholeCard.z - this._scrollY;
+        const boundedZoom = Math.max(ZOOM_BOUNDS.min, Math.min(ZOOM_BOUNDS.max, cardNewZ));
+        this._cardTransformService.updateTranslations({
+          wholeCard: {
+            x: current.wholeCard.x,
+            y: current.wholeCard.y,
+            z: boundedZoom
+          }
+        });
         this._scrollY -= wheelEvent.deltaY;
-
       });
 
       this._activeMoveListener = this._renderer.listen('document', 'pointermove', (moveEvent: PointerEvent) => {
-        this._renderer.addClass(this._el.nativeElement, 'smooth-transition');
-        this.cardTranslations = this._cardTransformService.cardTranslations$.getValue();
-        if (!this._clientX) { this._clientX = moveEvent.clientX}
-        if (!this._clientY) { this._clientY = moveEvent.clientY}
-        if((this._clientX !== moveEvent.clientX) || (this._clientY !== moveEvent.clientY)){
-          this._cardTransformService.cardTranslations$.next({
-            wholeCard: {
-              x: this.cardTranslations.wholeCard.x - this._clientY + moveEvent.clientY,
-              y: this.cardTranslations.wholeCard.y - this._clientX + moveEvent.clientX,
-              z: this.cardTranslations.wholeCard.z
-            }
-          });
-          this._clientX = moveEvent.clientX;
-          this._clientY = moveEvent.clientY;
-        }
+        // Throttle updates to animation frames for smoother performance
+        if (this._rafId) { return; }
+        this._rafId = requestAnimationFrame(() => {
+          this._rafId = null;
+          this._renderer.addClass(this._el.nativeElement, 'smooth-transition');
+          const current = this._cardTransformService.getCurrentTranslations();
+          if (!this._clientX) { this._clientX = moveEvent.clientX}
+          if (!this._clientY) { this._clientY = moveEvent.clientY}
+          if((this._clientX !== moveEvent.clientX) || (this._clientY !== moveEvent.clientY)){
+            this._cardTransformService.updateTranslations({
+              wholeCard: {
+                x: current.wholeCard.x - this._clientY + moveEvent.clientY,
+                y: current.wholeCard.y - this._clientX + moveEvent.clientX,
+                z: current.wholeCard.z
+              }
+            });
+            this._clientX = moveEvent.clientX;
+            this._clientY = moveEvent.clientY;
+          }
+        });
       });
 
       this._activePointerUpListener = this._renderer.listen('document', 'pointerup', () => {
@@ -101,6 +95,10 @@ export class DraggableDirective implements OnDestroy {
     if (this._activePointerUpListener) {
       this._activePointerUpListener();
       this._activePointerUpListener = null;
+    }
+    if (this._rafId) {
+      cancelAnimationFrame(this._rafId);
+      this._rafId = null;
     }
   }
 }

@@ -1,5 +1,4 @@
-import { Component, OnInit, Renderer2, input, output, model } from '@angular/core';
-import { CardTransformService } from '../shared/card-transform.service';
+import { Component, OnInit, OnDestroy, input, output } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { DraggableDirective } from '../shared/draggable.directive';
 
@@ -10,7 +9,7 @@ import { DraggableDirective } from '../shared/draggable.directive';
   templateUrl: './card.component.html',
   styleUrl: './card.component.scss'
 })
-export class CardComponent implements OnInit {
+export class CardComponent implements OnInit, OnDestroy {
   protected reducedMotionMediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
   protected reducedMotion: boolean = this.reducedMotionMediaQuery.matches;
 
@@ -28,32 +27,33 @@ export class CardComponent implements OnInit {
   isOpen = input<boolean>(false);
   loading = input<boolean>(false);
 
-  constructor(private _cardTransformService: CardTransformService,
-    private _renderer: Renderer2) {}
+  /** Emits when the card should focus on a particular face */
+  focusCard = output<'face' | 'inside'>();
+
+  private _mediaQueryHandler = () => {
+    this.reducedMotion = this.reducedMotionMediaQuery.matches;
+  };
 
   ngOnInit(): void {
-    this._renderer.listen(this.reducedMotionMediaQuery, 'change', () => {
-      this.reducedMotion = this.reducedMotionMediaQuery.matches;
-    });
+    this.reducedMotionMediaQuery.addEventListener('change', this._mediaQueryHandler);
+  }
+
+  ngOnDestroy(): void {
+    this.reducedMotionMediaQuery.removeEventListener('change', this._mediaQueryHandler);
   }
 
   get cardTransform(): string {
     return `translateZ(${this.wholeCardZ() || 0}em) rotateX(${this.wholeCardX() || 0}deg) rotateY(${this.wholeCardY() || 0}deg)`;
   }
 
-  public editContent(event: MouseEvent, type: 'salutation' | 'cardMessage' | 'signOff'){
+  public editContent(event: MouseEvent, type: 'salutation' | 'cardMessage' | 'signOff'): void {
     event.preventDefault();
     this.isSidebarCollapsedEmitter.emit(false);
-    this._renderer.selectRootElement(`#${type}Field`).focus();
+    const field = document.getElementById(`${type}Field`);
+    field?.focus();
   }
 
-  public focus(type: 'face' | 'inside'){
-    this._cardTransformService.cardTranslations$.next({
-      wholeCard: {
-        x: 0,
-        y: 0,
-        z: this.wholeCardZ()
-      }
-    });
+  public focus(type: 'face' | 'inside'): void {
+    this.focusCard.emit(type);
   }
 }
