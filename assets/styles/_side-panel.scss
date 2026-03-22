@@ -1,6 +1,12 @@
 .side-panel{
   transition: ease-out left 0.3s;
   height: 100dvh;
+  position: absolute;
+  z-index: 9999;
+  top: 0px;
+  left: 0px;
+  width: 100dvw;
+  background-color: whitesmoke;
   @media screen and (max-height: 400px) {
     height: 100vh;
   }
@@ -17,11 +23,8 @@
   @media screen and (min-width: 1600px) {
     width: 20vw;
   }
-  position: absolute;
-  z-index: 9999;
-  top: 0px;
-  left: 0px;
   &.collapse{
+    left: -100%;
     @media screen and (min-width: 700px) {
       left: -50%;
     }
@@ -34,7 +37,6 @@
     @media screen and (min-width: 1600px) {
       left: -20%;
     }
-    left: -100%;
     button{
       &.btn-action{
         &__collapse{
@@ -73,8 +75,6 @@
       }
     }
   }
-  width: 100dvw;
-  background-color: whitesmoke;
   form {
     height: auto;
     .feedback-container{

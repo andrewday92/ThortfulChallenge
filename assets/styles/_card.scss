@@ -1,8 +1,4 @@
 .card-wrapper{
-  @media screen and (max-width: 600px) {
-    width: 100%;
-    height: 100%;
-  }
   touch-action: none;
   display:flex;
   align-items: center;
@@ -13,18 +9,21 @@
   background-color: transparent;
   overflow-y: scroll;
   cursor: grab;
+  @media screen and (max-width: 600px) {
+    width: 100%;
+    height: 100%;
+  }
   .card{
-    @media screen and (min-width: 600px) {
-      width: 15em;
-      height: 20em;
-
-    }
     position: relative;
     width: 10em;
     height: 15em;
     transform-style: preserve-3d;
     transform-origin: center;
-    transition:   rotate 0.3s ease-in, translate 0.3s ease-in;
+    transition: rotate 0.3s ease-in, translate 0.3s ease-in;
+    @media screen and (min-width: 600px) {
+      width: 15em;
+      height: 20em;
+    }
     .card__face{
       position: absolute;
       top: 0px;
@@ -155,6 +154,13 @@
   }
 }
 .card-transform-buttons-container{
+  position: fixed;
+  bottom: 0px;
+  right: 10px;
+  height: auto;
+  width: auto;
+  padding: 1em;
+  margin: 0.5em;
   @media screen and (max-width: 700px) {
     width: 100vw;
     padding: 0;
@@ -163,11 +169,4 @@
     bottom: -3;
     z-index: 9998;
   }
-  position: fixed;
-  bottom: 0px;
-  right: 10px;
-  height: auto;
-  width: auto;
-  padding: 1em;
-  margin: 0.5em;
 }
