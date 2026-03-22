@@ -1,3 +1,5 @@
+@use './variables' as *;
+
 button{
   height: auto;
   width: auto;
@@ -26,6 +28,9 @@ button{
       padding: 0.3em;
     }
     &__card-transform{
+      font-size: 1.2em;
+      padding: 1em;
+      position: relative;
       @media screen and (max-width: 700px) {
         width: calc(100% / 7);
         margin: 0;
@@ -37,9 +42,6 @@ button{
         background-color: whitesmoke;
         z-index: 9998;
       }
-      font-size: 1.2em;
-      padding: 1em;
-      position: relative;
       &:first-of-type{
         @media screen and (max-width: 600px) {
           &:hover, &:focus{
@@ -74,11 +76,6 @@ button{
           z-index: 9998;
         }
         &::after{
-          @media screen and (max-width: 600px) {
-            font-size: 1em;
-            width: 30vw;
-            left: calc(-50% - 0.6em);
-          }
           content: attr(title);
           font-size: 0.8em;
           z-index: 9998;
@@ -89,6 +86,11 @@ button{
           left: calc(-50% - 0.6em);
           background-color: #20242f;
           padding: 0.6em;
+          @media screen and (max-width: 600px) {
+            font-size: 1em;
+            width: 30vw;
+            left: calc(-50% - 0.6em);
+          }
         }
       }
     }

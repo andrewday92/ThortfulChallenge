@@ -7,31 +7,36 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    
+
     - name: Checkout Repository
-      uses: actions/checkout@v2
-      
+      uses: actions/checkout@v4
+
     - name: Adding Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v4
       with:
-          node-version: 18
-    
+        node-version: 22
+
     - name: Install Dependencies
-      run: npm install
+      run: npm ci
+
+    - name: Inject environment secrets
+      env:
+        UNSPLASH_CLIENT_ID: ${{ secrets.UNSPLASH_CLIENT_ID }}
+        UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+        APP_ENCRYPTION_KEY: ${{ secrets.APP_ENCRYPTION_KEY }}
+      run: |
+        # Replace placeholders in the prod environment file with actual secrets
+        sed -i "s|UNSPLASH_CLIENT_ID|${UNSPLASH_CLIENT_ID}|g" src/environments/environment.prod.ts
+        sed -i "s|UNSPLASH_ACCESS_KEY|${UNSPLASH_ACCESS_KEY}|g" src/environments/environment.prod.ts
+        sed -i "s|APP_ENCRYPTION_KEY|${APP_ENCRYPTION_KEY}|g" src/environments/environment.prod.ts
 
     - name: Build
       run: npm run build
-           
+
     - name: Deploy
       if: success()
-      uses: peaceiris/actions-gh-pages@v3
+      uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: dist/ThortfulChallenge
+        publish_dir: dist/ThortfulChallenge/browser
         enable_jekyll: true
-
-    
-    
-
-      
-      
