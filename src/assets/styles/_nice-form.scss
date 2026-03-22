@@ -695,8 +695,10 @@ select {
 
     // -------- ICONS
 
-    --icon-padding: calc(var(--nf-input-size) * 2.25);
-    --icon-background-offset: calc(var(--nf-input-size) * 0.75);
+    & {
+      --icon-padding: calc(var(--nf-input-size) * 2.25);
+      --icon-background-offset: calc(var(--nf-input-size) * 0.75);
+    }
 
     &.icon-left {
       background-position: left var(--icon-background-offset) bottom 50%;
@@ -991,12 +993,14 @@ select {
 
   // --------------- SWITCH
 
-  --switch-orb-size: var(--nf-input-size);
-  --switch-orb-offset: calc(var(--nf-input-border-width) * 2);
-  --switch-width: calc(var(--nf-input-size) * 2.5);
-  --switch-height: calc(
-    calc(var(--nf-input-size) * 1.25) + var(--switch-orb-offset)
-  );
+  & {
+    --switch-orb-size: var(--nf-input-size);
+    --switch-orb-offset: calc(var(--nf-input-border-width) * 2);
+    --switch-width: calc(var(--nf-input-size) * 2.5);
+    --switch-height: calc(
+      calc(var(--nf-input-size) * 1.25) + var(--switch-orb-offset)
+    );
+  }
 
   > input[type="checkbox"].switch {
     width: var(--switch-width);
