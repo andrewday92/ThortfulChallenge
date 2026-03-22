@@ -1,12 +1,13 @@
-import { Directive, ElementRef, HostListener, Input, Renderer2 } from '@angular/core';
+import { Directive, ElementRef, HostListener, Input, OnDestroy, Renderer2 } from '@angular/core';
 import { CardTransformService } from './card-transform.service';
 import { cardTranslations } from '@models';
 
 
 @Directive({
-  selector: '[appDraggable]'
+  selector: '[appDraggable]',
+  standalone: true
 })
-export class DraggableDirective {
+export class DraggableDirective implements OnDestroy {
   @Input() reducedMotion = false;
   public cardTranslations: cardTranslations = {wholeCard: {x: 0, y: -20, z: 0}};
   private _offsetX = 0;
@@ -15,8 +16,18 @@ export class DraggableDirective {
   private _clientY: number | undefined;
   private _scrollY: number | undefined;
   private _nativeHostElement!: any;
+
+  /** Track active listener teardown functions to prevent memory leaks */
+  private _activeScrollListener: (() => void) | null = null;
+  private _activeMoveListener: (() => void) | null = null;
+  private _activePointerUpListener: (() => void) | null = null;
+
   constructor(private _renderer: Renderer2, private _el: ElementRef, private _cardTransformService: CardTransformService) {
     this._nativeHostElement = this._el.nativeElement;
+  }
+
+  ngOnDestroy(): void {
+    this._cleanupListeners();
   }
 
   @HostListener('pointerdown', ['$event'])
@@ -25,11 +36,14 @@ export class DraggableDirective {
     if(this.reducedMotion){
       event.preventDefault();
 
+      // Clean up any previously active listeners before registering new ones
+      this._cleanupListeners();
+
       const rect = this._nativeHostElement.getBoundingClientRect();
       this._offsetX = event.clientX - rect.left;
       this._offsetY = event.clientY - rect.top;
 
-      const scrollCard = this._renderer.listen(this._el.nativeElement, 'wheel', (wheelEvent: WheelEvent) => {
+      this._activeScrollListener = this._renderer.listen(this._el.nativeElement, 'wheel', (wheelEvent: WheelEvent) => {
         if (!this._scrollY) { this._scrollY = wheelEvent.deltaY}
         const cardNewZ = this.cardTranslations.wholeCard.z - this._scrollY;
         const boundedZoom: number = cardNewZ > 30  ? 30 : cardNewZ < -50 ? -50 : cardNewZ;
@@ -46,7 +60,7 @@ export class DraggableDirective {
 
       });
 
-      const moveCard = this._renderer.listen('document', 'pointermove', (moveEvent: PointerEvent) => {
+      this._activeMoveListener = this._renderer.listen('document', 'pointermove', (moveEvent: PointerEvent) => {
         this._renderer.addClass(this._el.nativeElement, 'smooth-transition');
         this.cardTranslations = this._cardTransformService.cardTranslations$.getValue();
         if (!this._clientX) { this._clientX = moveEvent.clientX}
@@ -63,14 +77,30 @@ export class DraggableDirective {
           this._clientY = moveEvent.clientY;
         }
       });
-      this._renderer.listen('document', 'pointerup', (mouseUpEvent: PointerEvent) => {
-        scrollCard();
-        moveCard();
+
+      this._activePointerUpListener = this._renderer.listen('document', 'pointerup', () => {
+        this._cleanupListeners();
         this._renderer.removeClass(this._el.nativeElement , 'smooth-transition');
         this._clientX = undefined;
         this._clientY = undefined;
         this._scrollY = undefined;
       });
+    }
+  }
+
+  /** Tear down all active event listeners to prevent accumulation */
+  private _cleanupListeners(): void {
+    if (this._activeScrollListener) {
+      this._activeScrollListener();
+      this._activeScrollListener = null;
+    }
+    if (this._activeMoveListener) {
+      this._activeMoveListener();
+      this._activeMoveListener = null;
+    }
+    if (this._activePointerUpListener) {
+      this._activePointerUpListener();
+      this._activePointerUpListener = null;
     }
   }
 }

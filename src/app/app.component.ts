@@ -2,12 +2,23 @@ import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { CardTransformService } from './shared/card-transform.service';
 import { CardFaceService } from './shared/card-face.service';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { occasions, CardFace, cardTranslations } from '@models';
+import { CardComponent } from './card/card.component';
+import { AsyncPipe, KeyValuePipe, NgOptimizedImage } from '@angular/common';
+
 @Component({
   selector: 'app-root',
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    CardComponent,
+    AsyncPipe,
+    KeyValuePipe,
+    NgOptimizedImage
+  ],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit , OnDestroy{
   protected _cardFaceHistory: Array<CardFace> = JSON.parse(localStorage.getItem('cardFaceHistory') ?? '[]');
