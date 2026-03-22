@@ -1,24 +1,25 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
 import { ApiHttpService } from './api-http.service';
-import { HttpClient } from '@angular/common/http';
 import { environment } from '@environments/environment';
 
 describe('ApiHttpService', () => {
   let service: ApiHttpService;
   let httpMock: HttpTestingController;
-  let mockHttpClient: HttpClient;
   environment.apiUrl = 'test-url';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [ApiHttpService]
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        ApiHttpService
+      ]
     });
 
     service = TestBed.inject(ApiHttpService);
     httpMock = TestBed.inject(HttpTestingController);
-    mockHttpClient = TestBed.inject(HttpClient);
   });
 
   afterEach(() => {
@@ -29,7 +30,7 @@ describe('ApiHttpService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should call HttpClient.get with the correct URL and headers', () => {
+  it('should call HttpClient.get with the correct URL', () => {
     const mockData = { id: 1, name: 'Test' };
     const endpoint = '/test-endpoint';
 
@@ -44,15 +45,12 @@ describe('ApiHttpService', () => {
     req.flush(mockData);
   });
 
-  it('should allow options to be passed to the get method', () => {
+  it('should allow params to be passed to the get method', () => {
     const mockData = { id: 2, name: 'Another Test' };
     const endpoint = '/another-endpoint';
-    const mockOptions = {
-      params: { search: 'test' },
-      responseType: 'json' as const
-    };
+    const mockParams: Record<string, string | number> = { search: 'test', per_page: 12 };
 
-    service.get(endpoint, mockOptions).subscribe((response) => {
+    service.get(endpoint, mockParams).subscribe((response) => {
       expect(response).toEqual(mockData);
     });
 
@@ -61,6 +59,8 @@ describe('ApiHttpService', () => {
     );
 
     expect(req.request.method).toBe('GET');
+    expect(req.request.params.get('search')).toBe('test');
+    expect(req.request.params.get('per_page')).toBe('12');
 
     req.flush(mockData);
   });
