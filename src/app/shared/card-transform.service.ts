@@ -7,12 +7,16 @@ import { CardTranslations, ZOOM_BOUNDS } from '@models';
 })
 export class CardTransformService {
   private _cardTranslations$ = new BehaviorSubject<CardTranslations>({wholeCard: {x: 0, y: 0, z: 0}});
-  public cardTranslations$: Observable<CardTranslations> = this._cardTranslations$.asObservable();
 
-  public updateTranslations(value: CardTranslations): void {
-    this._cardTranslations$.next(value);
+  /** Observable stream of card translations for subscribers */
+  public readonly cardTranslations$: Observable<CardTranslations> = this._cardTranslations$.asObservable();
+
+  /** Update the card translations */
+  public updateTranslations(translations: CardTranslations): void {
+    this._cardTranslations$.next(translations);
   }
 
+  /** Get the current translation values synchronously */
   public getCurrentTranslations(): CardTranslations {
     return this._cardTranslations$.getValue();
   }

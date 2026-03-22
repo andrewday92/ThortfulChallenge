@@ -1,6 +1,5 @@
 import { Directive, ElementRef, HostListener, Input, OnDestroy, Renderer2 } from '@angular/core';
 import { CardTransformService } from './card-transform.service';
-import { CardTranslations } from '@models';
 
 
 @Directive({

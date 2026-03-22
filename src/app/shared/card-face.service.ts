@@ -8,16 +8,27 @@ import { CardFace, Topic, UnsplashImage } from '@models';
   providedIn: 'root'
 })
 export class CardFaceService {
-  public cardFaceHistory: Array<CardFace> = JSON.parse(
-    this._browserStorageService.getItem('cardFaceHistory', StorageTypes.Local) as string ?? '[]'
-  );
+  public cardFaceHistory: Array<CardFace> = [];
 
-  constructor(private _api: ApiHttpService, private _browserStorageService: BrowserStorageService) {}
+  constructor(private _api: ApiHttpService, private _browserStorageService: BrowserStorageService) {
+    this._loadHistory();
+  }
+
+  private _loadHistory(): void {
+    const stored = this._browserStorageService.getItem('cardFaceHistory', StorageTypes.Local);
+    if (typeof stored === 'string') {
+      try {
+        this.cardFaceHistory = JSON.parse(stored);
+      } catch {
+        this.cardFaceHistory = [];
+      }
+    }
+  }
 
   getTopics(): Observable<Topic[]> {
     const params = { 'per_page': 12 };
 
-    return this._api.get<any[]>('topics', params).pipe(
+    return this._api.get<Array<{ title: string; slug: string }>>('topics', params).pipe(
       map((data) =>
         data.map((topic): Topic => ({
           title: topic.title,

@@ -68,9 +68,9 @@
   <main>
 
   <app-card [isSidebarCollapsed]="isSidebarCollapsed" (isSidebarCollapsedEmitter)="isSidebarCollapsed = $event"
-      (focusCard)="focus($event)"
       [salutation]="salutation" [cardMessage]="cardMessage" [signOff]="signOff" [isOpen]="isOpen" [loading]="loading"
-      [wholeCardZ]="wholeCardZ" [wholeCardX]="wholeCardX" [wholeCardY]="wholeCardY"></app-card>
+      [wholeCardZ]="wholeCardZ" [wholeCardX]="wholeCardX" [wholeCardY]="wholeCardY"
+      (focusCard)="focus($event)"></app-card>
 
   <div class="card-transform-buttons-container" >
     <button class="btn btn-action btn-action__card-transform" role="button" title="Zoom in on card" (click)="transformCard('z', -3)"><i class="fa-solid fa-magnifying-glass-plus"></i></button>

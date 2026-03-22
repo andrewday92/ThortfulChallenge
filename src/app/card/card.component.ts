@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2, input, output } from '@angular/core';
+import { Component, OnInit, OnDestroy, input, output } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { DraggableDirective } from '../shared/draggable.directive';
 
@@ -9,7 +9,7 @@ import { DraggableDirective } from '../shared/draggable.directive';
   templateUrl: './card.component.html',
   styleUrl: './card.component.scss'
 })
-export class CardComponent implements OnInit {
+export class CardComponent implements OnInit, OnDestroy {
   protected reducedMotionMediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
   protected reducedMotion: boolean = this.reducedMotionMediaQuery.matches;
 
@@ -30,12 +30,16 @@ export class CardComponent implements OnInit {
   /** Emits the card focus type so the parent can handle the transform service call */
   focusCard = output<'face' | 'inside'>();
 
-  constructor(private _renderer: Renderer2) {}
+  private _mediaQueryHandler = () => {
+    this.reducedMotion = this.reducedMotionMediaQuery.matches;
+  };
 
   ngOnInit(): void {
-    this.reducedMotionMediaQuery.addEventListener('change', () => {
-      this.reducedMotion = this.reducedMotionMediaQuery.matches;
-    });
+    this.reducedMotionMediaQuery.addEventListener('change', this._mediaQueryHandler);
+  }
+
+  ngOnDestroy(): void {
+    this.reducedMotionMediaQuery.removeEventListener('change', this._mediaQueryHandler);
   }
 
   get cardTransform(): string {
@@ -45,7 +49,8 @@ export class CardComponent implements OnInit {
   public editContent(event: MouseEvent, type: 'salutation' | 'cardMessage' | 'signOff'): void {
     event.preventDefault();
     this.isSidebarCollapsedEmitter.emit(false);
-    this._renderer.selectRootElement(`#${type}Field`).focus();
+    const field = document.getElementById(`${type}Field`);
+    field?.focus();
   }
 
   public focus(type: 'face' | 'inside'): void {

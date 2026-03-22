@@ -14,8 +14,8 @@ import { BrowserStorageService, StorageTypes } from './core/services/browser-sto
   imports: [
     ReactiveFormsModule,
     CardComponent,
-    AsyncPipe,
     KeyValuePipe,
+    AsyncPipe,
     NgOptimizedImage
   ],
   templateUrl: './app.component.html',
@@ -59,10 +59,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // Load card face history via the storage service rather than direct localStorage access
-    const stored = this._browserStorageService.getItem('cardFaceHistory', StorageTypes.Local);
-    if (stored && typeof stored === 'string') {
-      this._cardFaceHistory = JSON.parse(stored);
-    }
+    this._cardFaceHistory = this._cardFaceService.cardFaceHistory;
 
     this._cardTransformService.cardTranslations$
       .pipe(takeUntil(this._destroy$))
