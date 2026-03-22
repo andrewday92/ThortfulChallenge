@@ -1,4 +1,13 @@
-export const occasions = {
+export interface Occasion {
+  title: string;
+  salutation: string[];
+  cardMessage: string;
+  signOff: string;
+}
+
+export type OccasionKey = 'newJob' | 'wedding' | 'funeral' | 'birthday';
+
+export const occasions: Record<OccasionKey, Occasion> = {
   newJob: {
     title: "New Job",
     salutation: ["Dear Andrew", "To Andrew", "Howdy Andrew"],
@@ -23,5 +32,4 @@ export const occasions = {
     cardMessage: "Happy Birthday!!!",
     signOff: "Love, Mum xo"
   },
-}
-
+};

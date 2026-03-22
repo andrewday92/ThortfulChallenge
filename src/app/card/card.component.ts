@@ -1,5 +1,4 @@
-import { Component, OnInit, Renderer2, input, output, model } from '@angular/core';
-import { CardTransformService } from '../shared/card-transform.service';
+import { Component, OnInit, Renderer2, input, output } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { DraggableDirective } from '../shared/draggable.directive';
 
@@ -28,11 +27,13 @@ export class CardComponent implements OnInit {
   isOpen = input<boolean>(false);
   loading = input<boolean>(false);
 
-  constructor(private _cardTransformService: CardTransformService,
-    private _renderer: Renderer2) {}
+  /** Emits the card focus type so the parent can handle the transform service call */
+  focusCard = output<'face' | 'inside'>();
+
+  constructor(private _renderer: Renderer2) {}
 
   ngOnInit(): void {
-    this._renderer.listen(this.reducedMotionMediaQuery, 'change', () => {
+    this.reducedMotionMediaQuery.addEventListener('change', () => {
       this.reducedMotion = this.reducedMotionMediaQuery.matches;
     });
   }
@@ -41,19 +42,13 @@ export class CardComponent implements OnInit {
     return `translateZ(${this.wholeCardZ() || 0}em) rotateX(${this.wholeCardX() || 0}deg) rotateY(${this.wholeCardY() || 0}deg)`;
   }
 
-  public editContent(event: MouseEvent, type: 'salutation' | 'cardMessage' | 'signOff'){
+  public editContent(event: MouseEvent, type: 'salutation' | 'cardMessage' | 'signOff'): void {
     event.preventDefault();
     this.isSidebarCollapsedEmitter.emit(false);
     this._renderer.selectRootElement(`#${type}Field`).focus();
   }
 
-  public focus(type: 'face' | 'inside'){
-    this._cardTransformService.cardTranslations$.next({
-      wholeCard: {
-        x: 0,
-        y: 0,
-        z: this.wholeCardZ()
-      }
-    });
+  public focus(type: 'face' | 'inside'): void {
+    this.focusCard.emit(type);
   }
 }

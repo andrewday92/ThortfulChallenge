@@ -8,8 +8,8 @@
       <div class="nice-form-group">
         <label for="occasions">Select an occasion</label>
         <select id="occasions" [tabindex]="isSidebarCollapsed ? -1 : 0" aria-label="Dropdown to choose an occasion for card" formControlName="occasions" (focus)="focus('inside')" (change)="suggestByOccasion()">
-          @for (occasion of occasions | async | keyvalue; track occasion.key) {
-            <option [value]="occasion.key">{{occasion.value["title"]}}</option>
+          @for (occasion of occasions | keyvalue; track occasion.key) {
+            <option [value]="occasion.key">{{occasion.value.title}}</option>
           }
         </select>
       </div>
@@ -30,7 +30,7 @@
       <div class="nice-form-group topics-container">
         <label for="topicDropdown">Search Topic</label>
         <select id="topicDropdown" [tabindex]="isSidebarCollapsed ? -1 : 0" aria-label="Dropdown to choose a topic to search under for the front face of the card" formControlName="topics" (focus)="focus('face')">
-          @for (topic of topics | async; track topic.slug) {
+          @for (topic of topics$ | async; track topic.slug) {
             <option [value]="topic.slug">{{topic.title}}</option>
           }
         </select>
@@ -48,11 +48,10 @@
       </div>
     </form>
     <div class="side-panel__search-history-container">
-      @if (_cardFaceHistory) {
+      @if (_cardFaceHistory.length) {
         <div class="side-panel__search-history">
           @for (image of _cardFaceHistory; track image.src) {
             <div class="image-container">
-              <link rel="preload" as="image" href="./assets/images/new-job.webp" type="image/webp">
               @if (loading) {
                 <div class="loading-state">
                   <div class="loading loading__small"></div>
@@ -69,6 +68,7 @@
   <main>
 
   <app-card [isSidebarCollapsed]="isSidebarCollapsed" (isSidebarCollapsedEmitter)="isSidebarCollapsed = $event"
+      (focusCard)="focus($event)"
       [salutation]="salutation" [cardMessage]="cardMessage" [signOff]="signOff" [isOpen]="isOpen" [loading]="loading"
       [wholeCardZ]="wholeCardZ" [wholeCardX]="wholeCardX" [wholeCardY]="wholeCardY"></app-card>
 
