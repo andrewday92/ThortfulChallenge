@@ -1,10 +1,10 @@
 // Form Styling taken from https://github.com/nielsVoogt/nice-forms.css/tree/main/src
 
 :root {
-  --nf-input-size: 1.2rem; // Input size - used for height/padding calculations
+  --nf-input-size: 1rem; // Input size - used for height/padding calculations
 
-  --nf-input-font-size: 1rem;
-  --nf-small-font-size: 1rem;
+  --nf-input-font-size: calc(var(--nf-input-size) * 0.875);
+  --nf-small-font-size: calc(var(--nf-input-size) * 0.875);
   --nf-input-font-family: inherit;
 
   // Input
